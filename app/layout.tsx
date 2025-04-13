@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "@/components/provider/theme-provider";
+import { cn } from "@/lib/utils";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const font = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
 });
 
@@ -23,12 +22,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html suppressHydrationWarning lang="en">
+        <body className={cn(font.className, " bg-white dark:bg-slate-900")}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            storageKey="discord-theme-key"
+            enableSystem={false}
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
