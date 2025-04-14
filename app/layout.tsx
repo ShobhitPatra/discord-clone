@@ -27,7 +27,7 @@ export default function RootLayout({
         <body
           className={cn(
             font.className,
-            " bg-white dark:bg-indigo-950 flex justify-center items-center"
+            "bg-gradient-to-r from-teal-400 to-yellow-200 dark:bg-gradient-to-r dark:from-purple-900 dark:to-purple-950 flex justify-center items-center"
           )}
         >
           <ThemeProvider

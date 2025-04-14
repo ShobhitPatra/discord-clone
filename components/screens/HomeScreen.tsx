@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -21,14 +22,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
+import FileUploadComponent from "../file-upload";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, {
-    message: "This feild is required",
+    message: "This field is required",
+  }),
+  imageUrl: z.string().min(1, {
+    message: "This field is required",
   }),
 });
 
 const HomeScreen = () => {
+  // resolving hydration error
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -38,12 +45,26 @@ const HomeScreen = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      imageUrl: "",
     },
   });
-
+  // handling loading state
   const isLoading = form.formState.isSubmitting;
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  // handling submit
+  const router = useRouter();
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      console.log(values);
+      console.log("inside");
+      await axios.post("/api/server", values);
+      console.log("here");
+      form.reset();
+      router.refresh();
+      window.location.reload();
+    } catch (error) {
+      console.log("inside catch");
+      console.log(error);
+    }
   };
 
   if (!isMounted) return null;
@@ -59,13 +80,28 @@ const HomeScreen = () => {
             account and remove your data from our servers.
           </DialogDescription>
         </DialogHeader>
-        {/* uploadthing */}
-        <div className="p-20 flex items-center justify-center">
-          Upload image for yuur server
-        </div>
-        {/* form  */}
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col space-y-8 "
+          >
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem className="flex justify-center items-center pt-4">
+                  <FormControl>
+                    <FileUploadComponent
+                      endpoint="serverImage"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="name"
