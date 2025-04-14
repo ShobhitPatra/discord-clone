@@ -1,6 +1,6 @@
+import HomeScreen from "@/components/screens/HomeScreen";
 import { prisma } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
-import { UserButton } from "@clerk/nextjs";
 
 import { redirect } from "next/navigation";
 
@@ -27,8 +27,7 @@ export default async function Home() {
 
   return (
     <div>
-      <h2>Create your own server</h2>
-      <UserButton />
+      <HomeScreen />
     </div>
   );
 }
