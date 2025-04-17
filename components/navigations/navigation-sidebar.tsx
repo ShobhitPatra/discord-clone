@@ -5,6 +5,7 @@ import NavigationSidebarClient from "./navigation-sidebar-client";
 
 const NavigationSidebar = async () => {
   const profile = await currentUser();
+  console.log("here ");
   if (!profile) {
     redirect("/");
   }

@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/provider/theme-provider";
+import { ModalProvider } from "@/components/provider/modal-provider";
 import { cn } from "@/lib/utils";
 
 const font = Open_Sans({
@@ -27,7 +28,7 @@ export default function RootLayout({
         <body
           className={cn(
             font.className,
-            "bg-gradient-to-r from-teal-400 to-yellow-200 dark:bg-gradient-to-r dark:from-purple-900 dark:to-purple-950 "
+            "bg-gradient-to-r from-teal-400 to-yellow-200 dark:bg-gradient-to-r dark:from-purple-900 dark:to-purple-950"
           )}
         >
           <ThemeProvider
@@ -36,6 +37,7 @@ export default function RootLayout({
             storageKey="discord-theme-key"
             enableSystem={false}
           >
+            <ModalProvider />
             {children}
           </ThemeProvider>
         </body>

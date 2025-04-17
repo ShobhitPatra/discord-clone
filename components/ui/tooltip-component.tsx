@@ -23,7 +23,9 @@ const TooltipComponent = ({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger onClick={onClickAction}>{label}</TooltipTrigger>
+        <TooltipTrigger asChild>
+          <span onClick={onClickAction}>{label}</span>
+        </TooltipTrigger>
         <TooltipContent side={side}>
           <p>{content}</p>
         </TooltipContent>

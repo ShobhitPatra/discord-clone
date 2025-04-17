@@ -1,4 +1,4 @@
-import HomeScreen from "@/components/screens/HomeScreen";
+import InitialModal from "@/components/modals/initial-modal";
 import { prisma } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
 
@@ -27,7 +27,7 @@ export default async function Home() {
 
   return (
     <div>
-      <HomeScreen />
+      <InitialModal />
     </div>
   );
 }

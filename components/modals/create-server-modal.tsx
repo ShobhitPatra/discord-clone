@@ -1,12 +1,13 @@
 "use client";
 import axios from "axios";
 import {
+  DialogFooter,
+  DialogHeader,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@radix-ui/react-dialog";
-import { DialogFooter, DialogHeader } from "../ui/dialog";
+} from "../ui/dialog";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -21,9 +22,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
 import FileUploadComponent from "../file-upload";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/use-modal-store";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -34,13 +35,10 @@ const formSchema = z.object({
   }),
 });
 
-const HomeScreen = () => {
-  // resolving hydration error
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
+const CreateServerModal = () => {
+  const { isOpen, onClose, type } = useModal();
+  const isModalOpen = type == "createServer" && isOpen;
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,27 +48,25 @@ const HomeScreen = () => {
   });
   // handling loading state
   const isLoading = form.formState.isSubmitting;
-  // handling submit
-  const router = useRouter();
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(values);
-      console.log("inside");
       await axios.post("/api/server", values);
-      console.log("here");
       form.reset();
       router.refresh();
-      window.location.reload();
+      onClose();
     } catch (error) {
       console.log("inside catch");
       console.log(error);
     }
   };
-
-  if (!isMounted) return null;
+  const handleOnClose = () => {
+    form.reset();
+    onClose();
+  };
   return (
-    <Dialog open>
-      <DialogContent className="bg-white overflow-hidden text-black p-4 rounded-md">
+    <Dialog open={isModalOpen} onOpenChange={handleOnClose}>
+      <DialogContent className=" bg-white overflow-hidden text-black p-1 rounded-md shadow-lg">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Create your own server
@@ -136,4 +132,4 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default CreateServerModal;

@@ -5,16 +5,18 @@ import { Separator } from "../ui/separator";
 import { Server } from "@prisma/client";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { ScrollArea } from "../ui/scroll-area";
+import { useModal } from "@/hooks/use-modal-store";
 
 const NavigationSidebarClient = ({ servers }: { servers: Server[] }) => {
+  const { onOpen } = useModal();
   const router = useRouter();
-  //   const params = useParams();
+  const params = useParams();
   return (
     <main
-      className="flex flex-col h-full bg-zinc-400 
+      className="flex-col h-full bg-zinc-400
     dark:bg-[#1E1F22]
     w-full text-primary "
     >
@@ -23,7 +25,7 @@ const NavigationSidebarClient = ({ servers }: { servers: Server[] }) => {
         <TooltipComponent
           side="right"
           onClickAction={() => {
-            console.log("object");
+            onOpen("createServer");
           }}
           content="create a server"
           label={
@@ -37,16 +39,22 @@ const NavigationSidebarClient = ({ servers }: { servers: Server[] }) => {
       </div>
       {/* severs  */}
       <div className="flex justify-center p-3">
-        <ScrollArea className="w-full flex-1">
+        <ScrollArea className="w-full flex-1  ">
           {servers.map((server) => {
             return (
-              <div key={server.id}>
+              <div key={server.id} className="py-1">
                 <TooltipComponent
-                  onClickAction={() => router.push(`server/${server.id}`)}
+                  onClickAction={() => {
+                    console.log(server.id);
+                    router.push(`${server.id}`);
+                  }}
                   label={
                     <button
                       className={cn(
-                        "relative bg-zinc-300  w-12 h-12 rounded-lg overflow-hidden"
+                        "relative bg-zinc-300 h-12  w-12 hover:rounded-lg  overflow-hidden",
+                        params?.serverId == server.id
+                          ? "rounded-lg "
+                          : "rounded-full"
                       )}
                     >
                       <Image
