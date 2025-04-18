@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import {
   DialogFooter,
   DialogHeader,
@@ -7,9 +6,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
-  DialogClose,
 } from "../ui/dialog";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -18,15 +15,18 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import axios from "axios";
 import FileUploadComponent from "../file-upload";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Cross } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -72,13 +72,8 @@ const InitialModal = () => {
 
   if (!isMounted) return null;
   return (
-    <Dialog open>
-      <DialogContent className="bg-white w-full overflow-hidden text-black p-1 rounded-md">
-        <DialogClose asChild>
-          <button className="absolute right-4 top-4 text-black hover:opacity-75">
-            <Cross className="h-4 w-4" />
-          </button>
-        </DialogClose>
+    <Dialog open={true}>
+      <DialogContent className="bg-white overflow-hidden text-black p-1 rounded-md">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Create your own server
@@ -139,7 +134,6 @@ const InitialModal = () => {
             </DialogFooter>
           </form>
         </Form>
-        <Cross className="h-4 w-4 fixed top-0 right-0 text-black" />
       </DialogContent>
     </Dialog>
   );
