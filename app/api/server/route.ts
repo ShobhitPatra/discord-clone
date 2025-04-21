@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { currentUser } from "@/lib/current-user";
 import { prisma } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
       data: {
         name,
         imageUrl,
-        inviteCode: "fdksjhfkjdsh",
+        inviteCode: uuidv4(),
         profileId: user?.id,
         channels: {
           create: [{ name: "general", profileId: user.id }],

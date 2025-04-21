@@ -4,14 +4,16 @@ import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 
 import React from "react";
-const ServerLayout = async ({
+export default async function ServerLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
   params: { serverId: string };
-}) => {
+}) {
   const profile = await currentUser();
+
+  console.log(`params.serverId at layout :${params.serverId}`);
 
   if (!profile) return redirect("/sign-in");
   const server = await prisma.server.findUnique({
@@ -24,7 +26,9 @@ const ServerLayout = async ({
       },
     },
   });
-  if (!server) return redirect("/");
+  if (!server) {
+    redirect("/");
+  }
   return (
     <div className="h-full">
       <div className=" bg-slate-900 md:flex h-full w-60 z-20 flex-col inset-y-0 fixed">
@@ -33,5 +37,4 @@ const ServerLayout = async ({
       <main className="h-full md:pl-60">{children}</main>
     </div>
   );
-};
-export default ServerLayout;
+}
