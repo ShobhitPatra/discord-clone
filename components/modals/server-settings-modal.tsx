@@ -27,6 +27,7 @@ import FileUploadComponent from "../file-upload";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/use-modal-store";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -37,7 +38,11 @@ const formSchema = z.object({
   }),
 });
 
-const InitialModal = () => {
+const ServerSettingsModal = () => {
+  const { data, type, isOpen } = useModal();
+  const server = data?.server;
+  const isModalOpen = isOpen && type === "update-server";
+
   // resolving hydration error
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -51,27 +56,31 @@ const InitialModal = () => {
       imageUrl: "",
     },
   });
+
+  useEffect(() => {
+    if (server) {
+      form.setValue("name", server?.name);
+      form.setValue("imageUrl", server?.imageUrl);
+    }
+  }, [server, form]);
   // handling loading state
   const isLoading = form.formState.isSubmitting;
   // handling submit
   const router = useRouter();
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(values);
-
-      await axios.post("/api/server", values);
-
-      form.reset();
+      await axios.patch(`/api/server/${server?.id}`, values);
       router.refresh();
       window.location.reload();
     } catch (error) {
+      console.log("inside catch");
       console.log(error);
     }
   };
 
   if (!isMounted) return null;
   return (
-    <Dialog open={true}>
+    <Dialog open={isModalOpen}>
       <DialogContent className="bg-white overflow-hidden text-black p-1 rounded-md">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
@@ -128,7 +137,7 @@ const InitialModal = () => {
             />
             <DialogFooter className="flex justify-end py-8 px-6">
               <Button type="submit" variant="primary" disabled={isLoading}>
-                Create
+                Save
               </Button>
             </DialogFooter>
           </form>
@@ -138,4 +147,4 @@ const InitialModal = () => {
   );
 };
 
-export default InitialModal;
+export default ServerSettingsModal;

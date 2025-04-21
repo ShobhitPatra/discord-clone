@@ -15,7 +15,6 @@ const InvitaionModal = () => {
   const origin = UseOrigin();
   const server = data?.server;
   const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
-  console.log(`inviteurl :${inviteUrl}`);
 
   const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
