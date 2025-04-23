@@ -13,8 +13,6 @@ export default async function ServerLayout({
 }) {
   const profile = await currentUser();
 
-  console.log(`params.serverId at layout :${params.serverId}`);
-
   if (!profile) return redirect("/sign-in");
   const server = await prisma.server.findUnique({
     where: {
@@ -32,7 +30,7 @@ export default async function ServerLayout({
   return (
     <div className="h-full">
       <div className=" bg-slate-900 md:flex h-full w-60 z-20 flex-col inset-y-0 fixed">
-        <ServerSidebar serverId={params.serverId} />
+        <ServerSidebar serverId={params?.serverId} />
       </div>
       <main className="h-full md:pl-60">{children}</main>
     </div>

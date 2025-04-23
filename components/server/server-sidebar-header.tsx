@@ -78,7 +78,12 @@ const ServerSidebarHeader = ({ server, role }: ServerSideBarHeaderProps) => {
             </DropdownMenuItem>
           )}
           {isModerator && (
-            <DropdownMenuItem className="p- flex justify-between ">
+            <DropdownMenuItem
+              onClick={() => {
+                onOpen("create-channel", { server });
+              }}
+              className="p- flex justify-between "
+            >
               <label>Create Channel</label>
               <Plus className="w-4 h-4" />
             </DropdownMenuItem>

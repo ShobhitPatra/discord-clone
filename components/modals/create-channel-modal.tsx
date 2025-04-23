@@ -21,36 +21,58 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import FileUploadComponent from "../file-upload";
+
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { ChannelType } from "@prisma/client";
+import qs from "query-string";
+import { useEffect } from "react";
 const formSchema = z.object({
   name: z.string().min(1, {
     message: "This field is required",
   }),
-  imageUrl: z.string().min(1, {
-    message: "This field is required",
-  }),
+  channelType: z.nativeEnum(ChannelType),
 });
 
-const CreateServerModal = () => {
-  const { isOpen, onClose, type } = useModal();
-  const isModalOpen = type == "createServer" && isOpen;
+const CreateChannel = () => {
+  const { isOpen, onClose, type, data } = useModal();
+  const server = data?.server;
+  const channelType = data?.channel?.type;
   const router = useRouter();
+  const isModalOpen = type == "create-channel" && isOpen;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      imageUrl: "",
+      channelType: ChannelType.TEXT,
     },
   });
   // handling loading state
   const isLoading = form.formState.isSubmitting;
 
+  useEffect(() => {
+    if (channelType) {
+      form.setValue("channelType", channelType);
+    }
+    form.setValue("channelType", ChannelType.TEXT);
+  }, [channelType, form]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post("/api/server", values);
+      const url = qs.stringifyUrl({
+        url: `/api/channels/create`,
+        query: { serverId: server?.id },
+      });
+      await axios.post(url, values);
       form.reset();
       router.refresh();
       onClose();
@@ -67,8 +89,9 @@ const CreateServerModal = () => {
       <DialogContent className="dark:bg-gradient-to-r dark:from-purple-900 dark:to-purple-950 bg-white text-black dark:text-white">
         <DialogHeader>
           <DialogTitle>
-            <label className="text-2xl font-bold uppercase dark:text-neutral-200/90">
-              Create your own server
+            <label className="text-xl font-bold uppercase dark:text-neutral-200/90">
+              Create Channel on{" "}
+              <span className="dark:text-green-400">{server?.name}</span>
             </label>
           </DialogTitle>
         </DialogHeader>
@@ -80,39 +103,55 @@ const CreateServerModal = () => {
           >
             <FormField
               control={form.control}
-              name="imageUrl"
+              name="name"
               render={({ field }) => (
-                <FormItem className="flex justify-center items-center  text-white">
+                <FormItem className="flex flex-col ">
+                  <FormLabel>
+                    <label className=" uppercase font-semibold">
+                      channel name
+                    </label>
+                  </FormLabel>
                   <FormControl>
-                    <FileUploadComponent
-                      endpoint="serverImage"
-                      value={field.value}
-                      onChange={field.onChange}
+                    <Input
+                      disabled={isLoading}
+                      placeholder="channel name"
+                      {...field}
+                      className=" border-1 border-black bg-black focus-visible:ring-0  focus-visible:ring-offset-0"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
+            {/* selct channel type  */}
             <FormField
               control={form.control}
-              name="name"
+              name="channelType"
               render={({ field }) => (
-                <FormItem className="flex flex-col ">
-                  <FormLabel>
-                    <label className=" uppercase font-semibold">
-                      server name
-                    </label>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="server name"
-                      {...field}
-                      className=" border-1 border-black bg-black focus-visible:ring-0  focus-visible:ring-offset-0"
-                    />
-                  </FormControl>
+                <FormItem>
+                  <FormLabel className="uppercase">Channel Type</FormLabel>
+                  <Select
+                    disabled={isLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full dark:text-neutral-200 bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
+                        <SelectValue placeholder="Select a channel type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="dark:bg-neutral-200/80 dark:text-black">
+                      {Object.values(ChannelType).map((type) => (
+                        <SelectItem
+                          key={type}
+                          value={type}
+                          className="capitalize"
+                        >
+                          {type.toLowerCase()}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -134,4 +173,4 @@ const CreateServerModal = () => {
   );
 };
 
-export default CreateServerModal;
+export default CreateChannel;
