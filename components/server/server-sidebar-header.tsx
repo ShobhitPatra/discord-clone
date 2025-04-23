@@ -67,7 +67,12 @@ const ServerSidebarHeader = ({ server, role }: ServerSideBarHeaderProps) => {
             </DropdownMenuItem>
           )}
           {isAdmin && (
-            <DropdownMenuItem className="p- flex justify-between ">
+            <DropdownMenuItem
+              onClick={() => {
+                onOpen("manage-members", { server });
+              }}
+              className="p- flex justify-between "
+            >
               <label>Manage Members</label>
               <User className="w-4 h-4" />
             </DropdownMenuItem>

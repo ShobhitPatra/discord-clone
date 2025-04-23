@@ -11,11 +11,11 @@ interface InvitationPageProps {
 const InvitationPage = async ({ params }: InvitationPageProps) => {
   const profile = await currentUser();
 
-  if (!profile) redirect("/1");
+  if (!profile) redirect("/");
 
-  if (!profile.id) redirect("/2");
+  if (!profile.id) redirect("/");
 
-  if (!params.inviteCode) redirect("/3");
+  if (!params.inviteCode) redirect("/");
 
   const isAlreadyMember = await prisma.server.findFirst({
     where: {
