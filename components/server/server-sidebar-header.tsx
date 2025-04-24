@@ -26,6 +26,7 @@ interface ServerSideBarHeaderProps {
 const ServerSidebarHeader = ({ server, role }: ServerSideBarHeaderProps) => {
   const { onOpen } = useModal();
   const isAdmin = role === MemberRole.ADMIN;
+  console.log(isAdmin);
   const isModerator = isAdmin || role === MemberRole.MODERATOR;
   return (
     <>
@@ -93,13 +94,23 @@ const ServerSidebarHeader = ({ server, role }: ServerSideBarHeaderProps) => {
             <DropdownMenuSeparator className="bg-slate-400/20 w-2/3    ml-5" />
           )}
           {isAdmin && (
-            <DropdownMenuItem className="p- flex justify-between text-rose-500">
-              <label>Remove users</label>
+            <DropdownMenuItem
+              onClick={() => {
+                onOpen("delete-server", { server });
+              }}
+              className="p- flex justify-between text-rose-500"
+            >
+              <label>Delete Server</label>
               <Trash className="w-4 h-4" />
             </DropdownMenuItem>
           )}
           {!isAdmin && (
-            <DropdownMenuItem className="p- flex justify-between text-rose-500">
+            <DropdownMenuItem
+              onClick={() => {
+                onOpen("leave-server", { server });
+              }}
+              className="p- flex justify-between text-rose-500"
+            >
               <label>Leave Server</label>
               <LogOut className="w-4 h-4" />
             </DropdownMenuItem>

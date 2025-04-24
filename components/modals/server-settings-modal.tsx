@@ -4,7 +4,6 @@ import {
   DialogHeader,
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogTitle,
 } from "../ui/dialog";
 import {
@@ -83,13 +82,9 @@ const ServerSettingsModal = () => {
     <Dialog open={isModalOpen}>
       <DialogContent className="bg-white overflow-hidden text-black p-1 rounded-md">
         <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">
-            Create your own server
+          <DialogTitle className=" uppercase text-2xl text-center font-bold">
+            Customize your own server
           </DialogTitle>
-          <DialogDescription className="text-center text-zinc-500">
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
