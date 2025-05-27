@@ -50,7 +50,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
     (member) => member.profileId == profile.id
   )?.role;
   return (
-    <div className="h-full flex flex-col text-primary bg-[#F2F3F5] dark:bg-[#2B2D31]">
+    <div className="h-full  w-full flex flex-col text-primary bg-[#F2F3F5] dark:bg-[#2B2D31]">
       <ServerSidebarHeader server={server} role={role} channels={channels} />
       <div>
         {!!textChannels?.length && (

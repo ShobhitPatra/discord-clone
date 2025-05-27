@@ -47,3 +47,49 @@ export async function DELETE(
     console.log(`CHANNELS/ChannelId ${error}`);
   }
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { channelId: string } }
+) {
+  try {
+    const { name } = await req.json();
+    const profile = await currentUser();
+    if (!profile?.id)
+      return NextResponse.json({ msg: "unauthorized" }, { status: 401 });
+    const { searchParams } = new URL(req.url);
+    const serverId = searchParams.get("serverId");
+    if (!serverId)
+      return NextResponse.json({ msg: "serveId is missing" }, { status: 401 });
+
+    const server = await prisma.server.update({
+      where: {
+        id: serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            role: {
+              not: "GUEST",
+            },
+          },
+        },
+      },
+      data: {
+        channels: {
+          update: {
+            where: {
+              id: params.channelId,
+            },
+            data: {
+              name,
+            },
+          },
+        },
+      },
+    });
+    return NextResponse.json(server);
+  } catch (error) {
+    console.log(`[CHANNEL[CHANNELID]],${error}`);
+    return NextResponse.json({ msg: "internal server error" }, { status: 500 });
+  }
+}

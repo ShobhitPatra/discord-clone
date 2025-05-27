@@ -24,7 +24,10 @@ const ServerChannel = ({ channel, role, server }: ServerChannelProps) => {
       </div>
       <div className="flex gap-x-2">
         {role !== MemberRole.GUEST ? (
-          <EditIcon className="w-3" onClick={() => onOpen(" edit-channel")} />
+          <EditIcon
+            className="w-3"
+            onClick={() => onOpen(" edit-channel", { server, channel })}
+          />
         ) : null}
         {role === MemberRole.ADMIN && channel.name !== "general" ? (
           <Trash2

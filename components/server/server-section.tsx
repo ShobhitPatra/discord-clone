@@ -21,11 +21,12 @@ const ServerSection = ({ label, role, server }: ServerSectionProps) => {
               onClick={() => onOpen("manage-members", { server })}
             />
           ) : null}
-
-          <Plus
-            className="w-4"
-            onClick={() => onOpen("create-channel", { server })}
-          />
+          {role !== MemberRole.GUEST ? (
+            <Plus
+              className="w-4"
+              onClick={() => onOpen("create-channel", { server })}
+            />
+          ) : null}
         </div>
       </div>
     </>
